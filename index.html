@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FunQuest Telegram Mini App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+        .mission-card {
+            transition: all 0.3s ease;
+        }
+        .mission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-blue-50 to-purple-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header Section -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-purple-600 mb-2">FunQuest</h1>
+            <p class="text-lg text-gray-600">Selesaikan misi dan dapatkan hadiah!</p>
+            <div class="mt-6 bg-white rounded-lg shadow-md p-4 max-w-md mx-auto">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium">Progress Misi</span>
+                    <span class="text-purple-600 font-bold" id="completed-count">0/3</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="progress-bar" class="progress-bar bg-purple-600 h-4 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Missions Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- Mission 1: Click Counter -->
+            <div id="mission1" class="mission-card bg-white rounded-xl shadow-md overflow-hidden p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                        <span class="text-purple-600 font-bold">1</span>
+                    </div>
+                    <h2 class="text-xl font-semibold">Click Master</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Klik tombol sebanyak 10 kali untuk menyelesaikan misi ini.</p>
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm text-gray-500">Progress: <span id="click-count">0</span>/10</span>
+                    <button id="click-btn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                        Klik Saya!
+                    </button>
+                </div>
+                <div id="mission1-status" class="text-center py-2 text-sm font-medium text-gray-500">
+                    Misi belum selesai
+                </div>
+            </div>
+
+            <!-- Mission 2: Quiz -->
+            <div id="mission2" class="mission-card bg-white rounded-xl shadow-md overflow-hidden p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                        <span class="text-blue-600 font-bold">2</span>
+                    </div>
+                    <h2 class="text-xl font-semibold">Quiz Time</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Apa ibukota Indonesia?</p>
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="wrong">Singapura</button>
+                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="correct">Jakarta</button>
+                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="wrong">Kuala Lumpur</button>
+                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="wrong">Bangkok</button>
+                </div>
+                <div id="mission2-status" class="text-center py-2 text-sm font-medium text-gray-500">
+                    Misi belum selesai
+                </div>
+            </div>
+
+            <!-- Mission 3: Drag & Drop -->
+            <div id="mission3" class="mission-card bg-white rounded-xl shadow-md overflow-hidden p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold">3</span>
+                    </div>
+                    <h2 class="text-xl font-semibold">Drag & Drop</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Seret bintang ke dalam kotak untuk menyelesaikan misi.</p>
+                <div class="flex justify-between items-center mb-4">
+                    <div id="star" draggable="true" class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center cursor-move">
+                        ⭐
+                    </div>
+                    <div id="drop-zone" class="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                        <span class="text-gray-400">Drop here</span>
+                    </div>
+                </div>
+                <div id="mission3-status" class="text-center py-2 text-sm font-medium text-gray-500">
+                    Misi belum selesai
+                </div>
+            </div>
+        </div>
+
+        <!-- Reward Section -->
+        <div id="reward-section" class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg p-6 text-center text-white mb-8 hidden">
+            <h2 class="text-2xl font-bold mb-2">Selamat! 🎉</h2>
+            <p class="mb-4">Anda telah menyelesaikan semua misi!</p>
+            <button id="claim-btn" class="px-6 py-3 bg-white text-purple-600 font-bold rounded-full hover:bg-gray-100 transition pulse-animation">
+                Klaim Hadiah Anda
+            </button>
+        </div>
+
+        <!-- Telegram Button -->
+        <div class="text-center">
+            <button id="tg-share-btn" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition hidden">
+                Bagikan di Telegram
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        // Mission states
+        const missions = {
+            mission1: { completed: false, clicks: 0 },
+            mission2: { completed: false },
+            mission3: { completed: false }
+        };
+        
+        // DOM Elements
+        const clickBtn = document.getElementById('click-btn');
+        const clickCount = document.getElementById('click-count');
+        const quizOptions = document.querySelectorAll('.quiz-option');
+        const star = document.getElementById('star');
+        const dropZone = document.getElementById('drop-zone');
+        const missionStatuses = [
+            document.getElementById('mission1-status'),
+            document.getElementById('mission2-status'),
+            document.getElementById('mission3-status')
+        ];
+        const completedCount = document.getElementById('completed-count');
+        const progressBar = document.getElementById('progress-bar');
+        const rewardSection = document.getElementById('reward-section');
+        const claimBtn = document.getElementById('claim-btn');
+        const tgShareBtn = document.getElementById('tg-share-btn');
+        
+        // Mission 1: Click Counter
+        clickBtn.addEventListener('click', () => {
+            missions.mission1.clicks++;
+            clickCount.textContent = missions.mission1.clicks;
+            
+            if (missions.mission1.clicks >= 10 && !missions.mission1.completed) {
+                completeMission('mission1');
+            }
+        });
+        
+        // Mission 2: Quiz
+        quizOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                if (missions.mission2.completed) return;
+                
+                const isCorrect = e.target.dataset.answer === 'correct';
+                if (isCorrect) {
+                    completeMission('mission2');
+                    e.target.classList.add('bg-green-100', 'border-green-400');
+                } else {
+                    e.target.classList.add('bg-red-100', 'border-red-400');
+                    setTimeout(() => {
+                        e.target.classList.remove('bg-red-100', 'border-red-400');
+                    }, 1000);
+                }
+            });
+        });
+        
+        // Mission 3: Drag & Drop
+        star.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', 'star');
+            setTimeout(() => {
+                star.classList.add('opacity-50');
+            }, 0);
+        });
+        
+        star.addEventListener('dragend', () => {
+            star.classList.remove('opacity-50');
+        });
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-purple-400', 'bg-purple-50');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-purple-400', 'bg-purple-50');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-purple-400', 'bg-purple-50');
+            
+            const data = e.dataTransfer.getData('text/plain');
+            if (data === 'star' && !missions.mission3.completed) {
+                dropZone.innerHTML = '⭐';
+                dropZone.classList.add('bg-green-100', 'border-green-400');
+                completeMission('mission3');
+            }
+        });
+        
+        // Complete mission function
+        function completeMission(missionId) {
+            missions[missionId].completed = true;
+            
+            // Update UI
+            const missionIndex = parseInt(missionId.replace('mission', '')) - 1;
+            missionStatuses[missionIndex].textContent = '✅ Misi selesai!';
+            missionStatuses[missionIndex].className = 'text-center py-2 text-sm font-medium text-green-600';
+            
+            // Update progress
+            const completedMissions = Object.values(missions).filter(m => m.completed).length;
+            completedCount.textContent = `${completedMissions}/3`;
+            progressBar.style.width = `${(completedMissions / 3) * 100}%`;
+            
+            // Check if all missions completed
+            if (completedMissions === 3) {
+                rewardSection.classList.remove('hidden');
+            }
+        }
+        
+        // Claim reward
+        claimBtn.addEventListener('click', () => {
+            rewardSection.innerHTML = `
+                <h2 class="text-2xl font-bold mb-2">Hadiah Anda! 🎁</h2>
+                <p class="mb-4">Anda mendapatkan 100 XP dan badge "Petualang Handal"!</p>
+                <div class="bg-white text-purple-600 inline-block p-3 rounded-full mb-4">
+                    <div class="text-4xl">🏆</div>
+                </div>
+                <p class="text-sm opacity-80">Hadiah telah dikirim ke akun Telegram Anda</p>
+            `;
+            tgShareBtn.classList.remove('hidden');
+        });
+        
+        // Telegram share button
+        tgShareBtn.addEventListener('click', () => {
+            tg.share('Saya baru saja menyelesaikan semua misi di FunQuest! Coba kamu juga!');
+        });
+    </script>
+</body>
+</html>
