@@ -1,268 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FunQuest Telegram Mini App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Premium Ad Reward System</title>
+    <script src='//libtl.com/sdk.js' data-zone='9472500' data-sdk='show_9472500'></script>
     <style>
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        :root {
+            --primary: #00c853;
+            --primary-dark: #009624;
+            --secondary: #ff6d00;
+            --secondary-dark: #e65100;
+            --blue: #4285f4;
+            --blue-dark: #3367d6;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f5f5f5;
+            --gray: #2a2a2a;
+            --card-bg: #1f1f1f;
+            --gold: #ffd700;
         }
-        .pulse-animation {
-            animation: pulse 1.5s infinite;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .mission-card {
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), #1a1a2e);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 200, 83, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 109, 0, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(255,255,255,0.1) 0%,
+                rgba(255,255,255,0) 50%,
+                rgba(255,255,255,0.1) 100%);
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .developer {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+            cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(5px);
         }
-        .mission-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        
+        .developer:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
         }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .user-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .user-badge {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            background: var(--gold);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 15px 10px;
+            width: 45%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #aaa;
+        }
+        
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .progress-label {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        
         .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            width: 30%;
             transition: width 0.5s ease;
         }
+        
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        /* 3D Button Styles */
+        .btn-3d {
+            position: relative;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            text-align: center;
+            transition: all 0.2s ease;
+            transform-style: preserve-3d;
+            perspective: 500px;
+            box-shadow: 
+                0 8px 0 var(--primary-dark),
+                0 15px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-3d::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(4px);
+            box-shadow: 
+                0 4px 0 var(--primary-dark),
+                0 8px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-3d:hover::after {
+            left: 100%;
+        }
+        
+        .btn-3d:active {
+            transform: translateY(8px);
+            box-shadow: 
+                0 0 0 var(--primary-dark),
+                0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            box-shadow: 
+                0 8px 0 var(--secondary-dark),
+                0 15px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary::before {
+            background: linear-gradient(45deg, var(--secondary), #ff9100);
+        }
+        
+        .btn-blue {
+            box-shadow: 
+                0 8px 0 var(--blue-dark),
+                0 15px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-blue::before {
+            background: linear-gradient(45deg, var(--blue), #64b5f6);
+        }
+        
+        .website-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .website-section h3 {
+            color: #64b5f6;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+            font-size: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .firebase-logo {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 10px;
+            background: rgba(255, 152, 0, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #ffa726;
+        }
+        
+        .ad-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .ad-label {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+        
+        /* Animation for ad watching */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease;
+        }
+        
+        .ad-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            z-index: 1000;
+            display: none;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
     </style>
-    <script src='//libtl.com/sdk.js' data-zone='9472500' data-sdk='show_9472500'></script>
 </head>
-<body class="bg-gradient-to-b from-blue-50 to-purple-50 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header Section -->
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-bold text-purple-600 mb-2">FunQuest</h1>
-            <p class="text-lg text-gray-600">Selesaikan misi dan dapatkan hadiah!</p>
-            <div class="mt-6 bg-white rounded-lg shadow-md p-4 max-w-md mx-auto">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="font-medium">Progress Misi</span>
-                    <span class="text-purple-600 font-bold" id="completed-count">0/3</span>
+<body>
+    <div class="ad-notification" id="ad-notification">Ad completed! +0.50 points added to your account</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Premium Ad Reward System</h1>
+            <div class="developer" onclick="window.location.href='https://t.me/RKDEVELOPER22'">Developer by RK DEVELOPER</div>
+        </div>
+        
+        <div class="content">
+            <div class="user-info">
+                <div class="user-badge">VIP USER</div>
+                <p>Welcome, <span id="user-name">User123</span></p>
+                <p>User ID: <span id="user-id">#USR-7694</span></p>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Watched Ads</h3>
+                    <div class="value" id="watched-ads">18</div>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-4">
-                    <div id="progress-bar" class="progress-bar bg-purple-600 h-4 rounded-full" style="width: 0%"></div>
+                <div class="stat-card">
+                    <h3>Earned Points</h3>
+                    <div class="value" id="earned-points">9.00</div>
                 </div>
             </div>
-        </header>
-
-        <!-- Rewarded interstitial -->
-        <script>
-            show_9472500('pop').then(() => {
-                alert('You have seen an ad!');
-                // Add user reward function here
-            }).catch(e => {
-                // Handle error
-            });
-        </script>
-
-        <!-- Missions Section -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <!-- Mission 1: Click Counter -->
-            <div id="mission1" class="mission-card bg-white rounded-xl shadow-md overflow-hidden p-6">
-                <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                        <span class="text-purple-600 font-bold">1</span>
-                    </div>
-                    <h2 class="text-xl font-semibold">Click Master</h2>
+            
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Progress to Bonus</span>
+                    <span id="ads-progress">30%</span>
                 </div>
-                <p class="text-gray-600 mb-4">Klik tombol sebanyak 10 kali untuk menyelesaikan misi ini.</p>
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-sm text-gray-500">Progress: <span id="click-count">0</span>/10</span>
-                    <button id="click-btn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
-                        Klik Saya!
-                    </button>
-                </div>
-                <div id="mission1-status" class="text-center py-2 text-sm font-medium text-gray-500">
-                    Misi belum selesai
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
                 </div>
             </div>
-
-            <!-- Mission 2: Quiz -->
-            <div id="mission2" class="mission-card bg-white rounded-xl shadow-md overflow-hidden p-6">
-                <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                        <span class="text-blue-600 font-bold">2</span>
-                    </div>
-                    <h2 class="text-xl font-semibold">Quiz Time</h2>
-                </div>
-                <p class="text-gray-600 mb-4">Apa ibukota Indonesia?</p>
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="wrong">Singapura</button>
-                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="correct">Jakarta</button>
-                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="wrong">Kuala Lumpur</button>
-                    <button class="quiz-option px-3 py-2 border rounded-lg hover:bg-gray-50" data-answer="wrong">Bangkok</button>
-                </div>
-                <div id="mission2-status" class="text-center py-2 text-sm font-medium text-gray-500">
-                    Misi belum selesai
+            
+            <div class="ad-container">
+                <div class="ad-label">MONETAG INTERSTITIAL AD</div>
+                <div class="buttons">
+                    <button class="btn-3d" id="watch-ad-btn" onclick="watchAd()">Watch Ad (+0.50)</button>
+                    <button class="btn-3d btn-secondary" id="auto-ad-btn" onclick="startAutoAds()">Auto Show Ads</button>
+                    <button class="btn-3d" id="stop-auto-btn" onclick="stopAutoAds()">Stop Auto Ads</button>
                 </div>
             </div>
-
-            <!-- Mission 3: Drag & Drop -->
-            <div id="mission3" class="mission-card bg-white rounded-xl shadow-md overflow-hidden p-6">
-                <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
-                        <span class="text-green-600 font-bold">3</span>
-                    </div>
-                    <h2 class="text-xl font-semibold">Drag & Drop</h2>
-                </div>
-                <p class="text-gray-600 mb-4">Seret bintang ke dalam kotak untuk menyelesaikan misi.</p>
-                <div class="flex justify-between items-center mb-4">
-                    <div id="star" draggable="true" class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center cursor-move">
-                        ⭐
-                    </div>
-                    <div id="drop-zone" class="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                        <span class="text-gray-400">Drop here</span>
-                    </div>
-                </div>
-                <div id="mission3-status" class="text-center py-2 text-sm font-medium text-gray-500">
-                    Misi belum selesai
-                </div>
+            
+            <div class="website-section">
+                <h3>Visit Our Website</h3>
+                <p>Check out our latest content and tools</p>
+                <button class="btn-3d btn-blue" onclick="window.open('https://imagetokbconvat.blogspot.com', '_blank')">Visit Website</button>
             </div>
         </div>
-
-        <!-- Reward Section -->
-        <div id="reward-section" class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg p-6 text-center text-white mb-8 hidden">
-            <h2 class="text-2xl font-bold mb-2">Selamat! 🎉</h2>
-            <p class="mb-4">Anda telah menyelesaikan semua misi!</p>
-            <button id="claim-btn" class="px-6 py-3 bg-white text-purple-600 font-bold rounded-full hover:bg-gray-100 transition pulse-animation">
-                Klaim Hadiah Anda
-            </button>
-        </div>
-
-        <!-- Telegram Button -->
-        <div class="text-center">
-            <button id="tg-share-btn" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition hidden">
-                Bagikan di Telegram
-            </button>
+        
+        <div class="footer">
+            <p>Secured by Firebase • All transactions are protected</p>
+            <div class="firebase-logo">Firebase</div>
         </div>
     </div>
 
     <script>
-        // Initialize Telegram WebApp
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        // Constants
+        const POINTS_PER_AD = 0.50;
+        const ADS_FOR_BONUS = 10;
         
-        // Mission states
-        const missions = {
-            mission1: { completed: false, clicks: 0 },
-            mission2: { completed: false },
-            mission3: { completed: false }
-        };
+        // State variables
+        let watchedAdsCount = 0;
+        let earnedPoints = 0;
+        let autoAdInterval;
+        let userId = null;
         
         // DOM Elements
-        const clickBtn = document.getElementById('click-btn');
-        const clickCount = document.getElementById('click-count');
-        const quizOptions = document.querySelectorAll('.quiz-option');
-        const star = document.getElementById('star');
-        const dropZone = document.getElementById('drop-zone');
-        const missionStatuses = [
-            document.getElementById('mission1-status'),
-            document.getElementById('mission2-status'),
-            document.getElementById('mission3-status')
-        ];
-        const completedCount = document.getElementById('completed-count');
-        const progressBar = document.getElementById('progress-bar');
-        const rewardSection = document.getElementById('reward-section');
-        const claimBtn = document.getElementById('claim-btn');
-        const tgShareBtn = document.getElementById('tg-share-btn');
+        const watchedAdsEl = document.getElementById('watched-ads');
+        const earnedPointsEl = document.getElementById('earned-points');
+        const adsProgressEl = document.getElementById('ads-progress');
+        const progressFillEl = document.getElementById('progress-fill');
+        const adNotificationEl = document.getElementById('ad-notification');
         
-        // Mission 1: Click Counter
-        clickBtn.addEventListener('click', () => {
-            missions.mission1.clicks++;
-            clickCount.textContent = missions.mission1.clicks;
-            
-            if (missions.mission1.clicks >= 10 && !missions.mission1.completed) {
-                completeMission('mission1');
+        // Initialize the app
+        function initApp() {
+            // Load user data
+            if (localStorage.getItem('watchedAdsCount')) {
+                watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount'));
+                earnedPoints = parseFloat(localStorage.getItem('earnedPoints'));
             }
-        });
-        
-        // Mission 2: Quiz
-        quizOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                if (missions.mission2.completed) return;
-                
-                const isCorrect = e.target.dataset.answer === 'correct';
-                if (isCorrect) {
-                    completeMission('mission2');
-                    e.target.classList.add('bg-green-100', 'border-green-400');
-                } else {
-                    e.target.classList.add('bg-red-100', 'border-red-400');
-                    setTimeout(() => {
-                        e.target.classList.remove('bg-red-100', 'border-red-400');
-                    }, 1000);
-                }
-            });
-        });
-        
-        // Mission 3: Drag & Drop
-        star.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', 'star');
-            setTimeout(() => {
-                star.classList.add('opacity-50');
-            }, 0);
-        });
-        
-        star.addEventListener('dragend', () => {
-            star.classList.remove('opacity-50');
-        });
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('border-purple-400', 'bg-purple-50');
-        });
-        
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('border-purple-400', 'bg-purple-50');
-        });
-        
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-purple-400', 'bg-purple-50');
             
-            const data = e.dataTransfer.getData('text/plain');
-            if (data === 'star' && !missions.mission3.completed) {
-                dropZone.innerHTML = '⭐';
-                dropZone.classList.add('bg-green-100', 'border-green-400');
-                completeMission('mission3');
+            // Generate user ID if not exists
+            if (!localStorage.getItem('userId')) {
+                const newUserId = 'USR-' + Math.floor(10000 + Math.random() * 90000);
+                localStorage.setItem('userId', newUserId);
             }
-        });
+            
+            userId = localStorage.getItem('userId');
+            document.getElementById('user-id').textContent = `#${userId}`;
+            document.getElementById('user-name').textContent = `User${Math.floor(1000 + Math.random() * 9000)}`;
+            
+            updateUI();
+        }
         
-        // Complete mission function
-        function completeMission(missionId) {
-            missions[missionId].completed = true;
+        // Update UI elements
+        function updateUI() {
+            watchedAdsEl.textContent = watchedAdsCount;
+            earnedPointsEl.textContent = earnedPoints.toFixed(2);
             
-            // Update UI
-            const missionIndex = parseInt(missionId.replace('mission', '')) - 1;
-            missionStatuses[missionIndex].textContent = '✅ Misi selesai!';
-            missionStatuses[missionIndex].className = 'text-center py-2 text-sm font-medium text-green-600';
+            const progress = (watchedAdsCount % ADS_FOR_BONUS) / ADS_FOR_BONUS * 100;
+            adsProgressEl.textContent = `${Math.round(progress)}%`;
+            progressFillEl.style.width = `${progress}%`;
             
-            // Update progress
-            const completedMissions = Object.values(missions).filter(m => m.completed).length;
-            completedCount.textContent = `${completedMissions}/3`;
-            progressBar.style.width = `${(completedMissions / 3) * 100}%`;
+            // Add animation when points change
+            earnedPointsEl.classList.remove('pulse');
+            void earnedPointsEl.offsetWidth; // Trigger reflow
+            earnedPointsEl.classList.add('pulse');
+        }
+        
+        // Watch ad function using Monetag
+        function watchAd() {
+            // Show ad notification
+            showAdNotification("Loading ad... Please wait");
             
-            // Check if all missions completed
-            if (completedMissions === 3) {
-                rewardSection.classList.remove('hidden');
+            // Show Monetag ad
+            if (typeof show_9472500 === 'function') {
+                show_9391539().then(() => {
+                    // Ad shown successfully
+                    watchedAdsCount++;
+                    earnedPoints += POINTS_PER_AD;
+                    
+                    // Every 10 ads, give bonus points
+                    if (watchedAdsCount % ADS_FOR_BONUS === 0) {
+                        earnedPoints += 1.00; // Bonus point
+                    }
+                    
+                    // Save data
+                    localStorage.setItem('watchedAdsCount', watchedAdsCount);
+                    localStorage.setItem('earnedPoints', earnedPoints);
+                    
+                    updateUI();
+                    
+                    // Show success notification
+                    showAdNotification("Ad completed! +0.50 points added to your account");
+                }).catch(error => {
+                    console.error("Ad error:", error);
+                    showAdNotification("Failed to show ad. Please try again.");
+                });
+            } else {
+                // Fallback to simulated ad
+                setTimeout(() => {
+                    watchedAdsCount++;
+                    earnedPoints += POINTS_PER_AD;
+                    
+                    // Every 10 ads, give bonus points
+                    if (watchedAdsCount % ADS_FOR_BONUS === 0) {
+                        earnedPoints += 1.00; // Bonus point
+                    }
+                    
+                    // Save data
+                    localStorage.setItem('watchedAdsCount', watchedAdsCount);
+                    localStorage.setItem('earnedPoints', earnedPoints);
+                    
+                    updateUI();
+                    
+                    // Show success notification
+                    showAdNotification("Ad completed! +0.50 points added to your account");
+                }, 2000);
             }
         }
         
-        // Claim reward
-        claimBtn.addEventListener('click', () => {
-            rewardSection.innerHTML = `
-                <h2 class="text-2xl font-bold mb-2">Hadiah Anda! 🎁</h2>
-                <p class="mb-4">Anda mendapatkan 100 XP dan badge "Petualang Handal"!</p>
-                <div class="bg-white text-purple-600 inline-block p-3 rounded-full mb-4">
-                    <div class="text-4xl">🏆</div>
-                </div>
-                <p class="text-sm opacity-80">Hadiah telah dikirim ke akun Telegram Anda</p>
-            `;
-            tgShareBtn.classList.remove('hidden');
-        });
+        // Auto show ads
+        function startAutoAds() {
+            autoAdInterval = setInterval(watchAd, 30000); // Auto show ad every 30 seconds
+            document.getElementById('auto-ad-btn').textContent = "Auto Ads Running...";
+            showAdNotification("Auto ads started. Ads will play every 30 seconds.");
+        }
         
-        // Telegram share button
-        tgShareBtn.addEventListener('click', () => {
-            tg.share('Saya baru saja menyelesaikan semua misi di FunQuest! Coba kamu juga!');
-        });
+        function stopAutoAds() {
+            clearInterval(autoAdInterval);
+            document.getElementById('auto-ad-btn').textContent = "Auto Show Ads";
+            showAdNotification("Auto ads stopped.");
+        }
+        
+        // Show ad notification
+        function showAdNotification(message) {
+            adNotificationEl.textContent = message;
+            adNotificationEl.style.display = 'block';
+            
+            setTimeout(() => {
+                adNotificationEl.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Initialize app on load
+        window.onload = initApp;
     </script>
 </body>
 </html>
